@@ -11,6 +11,9 @@ psycopg2-binary = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
 flask-serializer = "*"
+flask-sqlalchemy = "*"
+flask-cors = "*"
+flask-migrate = "*"
 
 [dev-packages]
 
