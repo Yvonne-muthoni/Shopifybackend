@@ -1,55 +1,71 @@
 from app import app, db
-from models import User, Order, Product, Payment
+from models import User, Product, Order, OrderItem, Payment
+import bcrypt
 
-def seed_data():
+def seed():
     with app.app_context():
-       
-        if not User.query.filter_by(username='john_doe').first():
-            user1 = User(username='john_doe', email='john@example.com', password='password134')
-            db.session.add(user1)
-        else:
-            user1 = User.query.filter_by(username='john_doe').first()
         
-        if not User.query.filter_by(username='jane_smith').first():
-            user2 = User(username='jane_smith', email='jane@example.com', password='password23')
-            db.session.add(user2)
-        else:
-            user2 = User.query.filter_by(username='jane_smith').first()
+        db.drop_all()
+        db.create_all()
+
+       
+        def hash_password(password):
+            return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
       
-        if not Product.query.filter_by(name='Product A').first():
-            product1 = Product(name='Product A', price=19.99, description='Description for Product A')
-            db.session.add(product1)
-        else:
-            product1 = Product.query.filter_by(name='Product A').first()
+        user1 = User(username='john_doe', email='john@example.com', password=hash_password('password123'))
+        user2 = User(username='jane_doe', email='jane@example.com', password=hash_password('password456'))
 
-        if not Product.query.filter_by(name='Product B').first():
-            product2 = Product(name='Product B', price=29.99, description='Description for Product B')
-            db.session.add(product2)
-        else:
-            product2 = Product.query.filter_by(name='Product B').first()
-
-       
+        db.session.add(user1)
+        db.session.add(user2)
         db.session.commit()
 
        
-        order1 = Order(user_id=user1.id, product_id=product1.id, quantity=2, total=product1.price * 2)
-        order2 = Order(user_id=user2.id, product_id=product2.id, quantity=1, total=product2.price)
+        product1 = Product(name='Laptop', description='A powerful laptop', price=1200.00)
+        product2 = Product(name='Smartphone', description='A high-end smartphone', price=800.00)
 
-       
-        payment1 = Payment(amount=order1.total, currency='USD', status='paid')
-        payment2 = Payment(amount=order2.total, currency='USD', status='pending')
+        db.session.add(product1)
+        db.session.add(product2)
+        db.session.commit()
 
-      
+        
+        order1 = Order(
+            user_id=user1.id,
+            shipping_name='John Doe',
+            shipping_address='123 Elm St',
+            shipping_city='Springfield',
+            shipping_state='IL',
+            shipping_zip='62701',
+            billing_name='John Doe',
+            billing_address='123 Elm St',
+            billing_city='Springfield',
+            billing_state='IL',
+            billing_zip='62701'
+        )
+
         db.session.add(order1)
-        db.session.add(order2)
-        db.session.add(payment1)
-        db.session.add(payment2)
-
-        
         db.session.commit()
 
-        print("Seeding completed successfully.")
+       
+        order_item1 = OrderItem(order_id=order1.id, product_id=product1.id, quantity=1)
+        order_item2 = OrderItem(order_id=order1.id, product_id=product2.id, quantity=2)
+
+        db.session.add(order_item1)
+        db.session.add(order_item2)
+        db.session.commit()
+
+        
+        payment1 = Payment(
+            order_id=order1.id,
+            card_number='1234567812345678',
+            expiration='12/25',
+            cvv='123'
+        )
+
+        db.session.add(payment1)
+        db.session.commit()
+
+        print("Database seeded successfully!")
 
 if __name__ == '__main__':
-    seed_data()
+    seed()

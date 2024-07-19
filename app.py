@@ -2,20 +2,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from config import Config
 from models import db, User, Order, Product, Payment
 
-import os
-
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATABASE = os.environ.get("DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
-
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config.from_object(Config)
 
 db.init_app(app)
 migrate = Migrate(app, db)
-
 CORS(app)
 
 @app.route("/")
@@ -32,8 +26,8 @@ def users():
         data = request.json
         new_user = User(
             username=data['username'],
-            email=data['email'],
-            password=data['password']
+            email=data['email']
+           
         )
         db.session.add(new_user)
         db.session.commit()
@@ -49,9 +43,17 @@ def orders():
         data = request.json
         new_order = Order(
             user_id=data['user_id'],
-            product_id=data['product_id'],
-            quantity=data['quantity'],
-            total=data['total']
+            shipping_name=data['shipping_name'],
+            shipping_address=data['shipping_address'],
+            shipping_city=data['shipping_city'],
+            shipping_state=data['shipping_state'],
+            shipping_zip=data['shipping_zip'],
+            billing_name=data['billing_name'],
+            billing_address=data['billing_address'],
+            billing_city=data['billing_city'],
+            billing_state=data['billing_state'],
+            billing_zip=data['billing_zip']
+           
         )
         db.session.add(new_order)
         db.session.commit()
@@ -67,8 +69,8 @@ def products():
         data = request.json
         new_product = Product(
             name=data['name'],
-            price=data['price'],
-            description=data.get('description', '')
+            description=data.get('description', ''),
+            price=data['price']
         )
         db.session.add(new_product)
         db.session.commit()
@@ -83,9 +85,10 @@ def payments():
     elif request.method == 'POST':
         data = request.json
         new_payment = Payment(
-            amount=data['amount'],
-            currency=data['currency'],
-            status=data.get('status', 'pending')
+            order_id=data['order_id'],
+            card_number=data['card_number'],
+            expiration=data['expiration'],
+            cvv=data['cvv']
         )
         db.session.add(new_payment)
         db.session.commit()
