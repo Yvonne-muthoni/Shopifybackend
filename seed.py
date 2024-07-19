@@ -65,7 +65,7 @@ def seed():
         db.session.add(payment1)
         db.session.commit()
 
-        print("Database seeded successfully!")
+        print("Database seeded!")
 
 if __name__ == '__main__':
     seed()
