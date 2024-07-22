@@ -29,7 +29,7 @@ end
 # unset irrelevant variables
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/shelvin/developments/Phase4/Project/Ecommerce/Shopify-backend/venv"
+set -gx VIRTUAL_ENV "/home/shelvin/developments/Phase4/Project/Ecommerce/Shopifybackend/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
