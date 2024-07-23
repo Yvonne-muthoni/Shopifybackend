@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -18,10 +19,12 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
 
+    CORS(app, resources={r"/auth/*": {"origins": "http://127.0.0.1:5173"}}, supports_credentials=True)
+
     from .routes import main
     from .auth import auth
 
     app.register_blueprint(main)
-    app.register_blueprint(auth)
+    app.register_blueprint(auth, url_prefix='/auth') 
 
     return app
