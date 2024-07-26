@@ -15,13 +15,13 @@ migrate = Migrate(app, db)
 
 CORS(app)
 
-# Product model
+
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120), nullable=False)
     price = db.Column(db.Float, nullable=False)
     image = db.Column(db.String(500), nullable=False)
-    description = db.Column(db.String(500), nullable=True)  # Added description field
+    description = db.Column(db.String(500), nullable=True)  
 
 # Cart model
 class Cart(db.Model):
@@ -42,7 +42,7 @@ productsFields = {
     'title': fields.String,
     'price': fields.Float,
     'image': fields.String,
-    'description': fields.String  # Added description field
+    'description': fields.String 
 }
 
 cartItemFields = {
